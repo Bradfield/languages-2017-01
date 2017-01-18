@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "jison": "^0.4.17",
     "jison-lex": "^0.3.4"
   }
 }

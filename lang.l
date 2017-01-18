@@ -38,12 +38,13 @@ scomment-text		{scomment-char}*\n
 '=>'         return 'ROCKET'
 ','          return 'COMMA'
 '='          return 'ASSIGN'
+';'          return 'SEMICOLON'
 if           return 'IF'
 else         return 'ELSE'
 while        return 'WHILE'
 let          return 'LET'
 true|false   return 'BOOL'
-{identifier} return 'IDENTIFIER'
+{id}         return 'ID'
 
 /* this.begin('sublexer') puts the lexer into state
    where only rules prefixed by <sublexer> will be
