@@ -1,7 +1,7 @@
 // af = Ast Factory
 
 const af = {
-	id: value => ({
+	id: values => ({
 		type: 'ID',
 		value,
 	}),
