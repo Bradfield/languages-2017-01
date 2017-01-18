@@ -13,9 +13,9 @@ program
 	;
 
 statements
-  : statement -> [$1] 
+  : statement -> [$1]
   | statements statement -> $1.concat($2)
-  ; 
+  ;
 
 statement
   : declaration_assignment SEMICOLON
@@ -32,11 +32,21 @@ declaration_assignment
   ;
 
 exp
-  : num
-  | string
-  | lambda 
-  | id
+  : num -> af.exp($1, null, null)
+  | string -> af.exp($1, null, null)
+  | lambda -> af.exp($1, null, null)
+  | id -> af.exp($1, null, null)
+  | exp operator exp -> af.exp($2, $1, $3)
+  | OPAREN exp CPAREN -> $2
   ;
+
+operator
+  : MINUS
+  | PLUS
+  | MULTIPLY
+  | DIVIDE
+  ;
+
 
 lambda
   : OPAREN arguments CPAREN ROCKET OCURLY statements CCURLY -> af.lambda($2, $6)
