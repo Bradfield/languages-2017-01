@@ -9,6 +9,10 @@ const af = {
 		type: 'NUM',
 		value: Number(n),
 	}),
+	operator: op => ({
+		type: 'OPERATOR',
+		value: op,
+	}),
   declareAssign: (id, exp) => ({
     type: 'DEC_ASSIGN',
     id,
