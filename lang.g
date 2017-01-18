@@ -34,6 +34,12 @@ declaration_assignment
 exp
   : num
   | string
+  | lambda 
+  | id
+  ;
+
+lambda
+  : OPAREN arguments CPAREN ROCKET OCURLY statements CCURLY -> af.lambda($2, $6)
   ;
 
 string

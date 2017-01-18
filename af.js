@@ -22,6 +22,11 @@ const af = {
     type: "FUNC_CALL",
     name: id.value,
     arguments
+  }),
+  lambda: (arguments, statements) => ({
+    type: 'LAMBDA',
+    arguments,
+    statements
   })
 }
 
