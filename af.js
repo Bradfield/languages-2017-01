@@ -17,8 +17,13 @@ const af = {
   string: str => ({
     type: 'STRING',
     value: JSON.parse(str)
+  }),
+  funcCall: id => ({
+    type: "FUNC_CALL",
+    name: id.value
   })
 }
+
 /*
 { type: program,
   statements: [

@@ -13,11 +13,16 @@ program
 	;
 
 statements
-  : statement SEMICOLON -> [$1] 
-  | statements statement SEMICOLON -> $1.concat($2)
+  : statement -> [$1] 
+  | statements statement -> $1.concat($2)
   ; 
 
 statement
+  : declaration_assignment SEMICOLON
+  | id OPAREN CPAREN SEMICOLON -> af.funcCall($1)
+  ;
+
+declaration_assignment
   : LET id ASSIGN exp -> af.declareAssign($2, $4)
   ;
 
