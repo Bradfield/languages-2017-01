@@ -18,9 +18,10 @@ const af = {
     type: 'STRING',
     value: JSON.parse(str)
   }),
-  funcCall: id => ({
+  funcCall: (id, arguments) => ({
     type: "FUNC_CALL",
-    name: id.value
+    name: id.value,
+    arguments
   })
 }
 

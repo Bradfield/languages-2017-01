@@ -23,5 +23,5 @@ const factory = require(resolve(__dirname, '../af'))
 
 parser.lexer = lexer
 console.log("=============== final parse tree ===============")
-console.log(parser.parse(stdinStr, factory))
+console.dir(parser.parse(stdinStr, factory), {depth: null})
 // console.log(parser.generate())

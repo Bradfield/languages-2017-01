@@ -19,7 +19,12 @@ statements
 
 statement
   : declaration_assignment SEMICOLON
-  | id OPAREN CPAREN SEMICOLON -> af.funcCall($1)
+  | id OPAREN arguments CPAREN SEMICOLON -> af.funcCall($1, $3)
+  ;
+
+arguments
+  : exp -> [$1]
+  | arguments COMMA exp -> $1.concat($3)
   ;
 
 declaration_assignment
