@@ -22,5 +22,6 @@ const parser = new require('jison').Parser(psrc)
 const factory = require(resolve(__dirname, '../af'))
 
 parser.lexer = lexer
+console.log("=============== final parse tree ===============")
 console.log(parser.parse(stdinStr, factory))
 // console.log(parser.generate())

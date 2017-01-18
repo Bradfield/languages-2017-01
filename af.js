@@ -1,7 +1,7 @@
 // af = Ast Factory
 
 const af = {
-	id: values => ({
+	id: value => ({
 		type: 'ID',
 		value,
 	}),
@@ -19,5 +19,26 @@ const af = {
     value: JSON.parse(str)
   })
 }
-
+/*
+{ type: program,
+  statements: [
+    { 
+      type: 'DEC_ASSIGN',
+      id: { type: 'ID', value: 'foobar' },
+      exp: { type: 'NUM', value: 23 } 
+    },
+    { 
+      type: 'DEC_ASSIGN',
+      id: { type: 'ID', value: 'foo' },
+      exp: { type: 'STRING', value: 'Hello World' } 
+    },
+    { 
+      type: 'DEC_ASSIGN',
+      id: { type: 'ID', value: 'bar' },
+      exp: { type: 'NUM', value: 10 } 
+    }
+  ]
+}
+let foo = "Hello World"; let bar = 10; let foobar = 23;
+*/
 module.exports = af

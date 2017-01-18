@@ -9,11 +9,16 @@
 %%
 
 program
-	: statement EOF { return $1 }
+	: statements EOF { return $1 }
 	;
 
+statements
+  : statement SEMICOLON -> [$1] 
+  | statements statement SEMICOLON -> $1.concat($2)
+  ; 
+
 statement
-  : LET id ASSIGN exp SEMICOLON -> af.declareAssign($2, $4)
+  : LET id ASSIGN exp -> af.declareAssign($2, $4)
   ;
 
 exp
