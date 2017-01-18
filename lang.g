@@ -20,6 +20,7 @@ statements
 statement
   : declaration_assignment SEMICOLON
   | id OPAREN arguments CPAREN SEMICOLON -> af.funcCall($1, $3)
+  | operation
   ;
 
 arguments
@@ -36,6 +37,13 @@ exp
   | string
   | lambda 
   | id
+  | operation
+  ;
+
+operation
+  : num OP num -> af.operation($1, $2, $3)
+  //| OPAREN operation CPAREN
+  //| operation OP operation
   ;
 
 lambda

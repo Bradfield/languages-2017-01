@@ -10,6 +10,7 @@ number   [\+\-]? {num}+
 letter   [a-zA-Z]
 id       {letter}({letter}|{num})*
 quote    \"
+operator [-+/*]
 
 string-char [^\"]
 string-escape-char \\\"
@@ -45,6 +46,7 @@ while        return 'WHILE'
 let          return 'LET'
 true|false   return 'BOOL'
 {id}         return 'ID'
+{operator}		 return 'OP'
 
 /* this.begin('sublexer') puts the lexer into state
    where only rules prefixed by <sublexer> will be
@@ -57,4 +59,4 @@ true|false   return 'BOOL'
 <scomment>{scomment-text}	      this.popState()
 
 <<EOF>>		return 'EOF'        /* turn EOF input into explicit token */
-.					return 'INVALID'    /* capture everything else as invalid token */
+.			return 'INVALID'    /* capture everything else as invalid token */

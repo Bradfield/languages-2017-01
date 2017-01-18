@@ -27,6 +27,12 @@ const af = {
     type: 'LAMBDA',
     arguments,
     statements
+  }),
+  operation: (left, op, right) => ({
+    type: "OPERATION",
+    left,
+    op, 
+    right
   })
 }
 
