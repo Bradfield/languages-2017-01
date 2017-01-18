@@ -23,3 +23,4 @@ const factory = require(resolve(__dirname, '../af'))
 
 parser.lexer = lexer
 console.log(parser.parse(stdinStr, factory))
+// console.log(parser.generate())

@@ -1,18 +1,22 @@
 // af = Ast Factory
 
 const af = {
-	id: name => ({
+	id: value => ({
 		type: 'ID',
-		name,
+		value,
 	}),
   number: n => ({
 		type: 'NUM',
 		value: Number(n),
 	}),
   declareAssign: (id, exp) => ({
-    type: 'ASSIGN',
+    type: 'DEC_ASSIGN',
     id,
     exp,
+  }),
+  string: str => ({
+    type: 'STRING',
+    value: JSON.parse(str)
   })
 }
 

@@ -18,6 +18,11 @@ statement
 
 exp
   : num
+  | string
+  ;
+
+string
+  : STRING -> af.string($1)
   ;
 
 num
