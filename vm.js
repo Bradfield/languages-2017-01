@@ -3,6 +3,7 @@ const instructionToByteCode = {
   add: 0x11, // Pop two items from local stack, add, and push result
   print: 0x12, // Pop one item from local stack, write to stdout
   equal: 0x13, // Pop two items from local stack. compare, and push bool
+  jump: 0x14, // Set instruction pointer to argument
   halt: 0xff, // Stop execution
 };
 
@@ -49,10 +50,12 @@ const vm = {
   },
 
   dispatch: (w) => {
+    let idx, arg;
+
     switch(byteCodeToName[w.bytecode]) {
       case 'local_load':
-        let idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
-        let arg = w.const[idx.readUInt16BE(0)]
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
+        arg = w.const[idx.readUInt16BE(0)]
         w.local_stack.push(arg);
         break;
       case 'add':
@@ -63,6 +66,10 @@ const vm = {
         break;
       case 'equal':
         w.local_stack.push(w.local_stack.pop() == w.local_stack.pop());
+        break;
+      case 'jump':
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
+        w.ip = idx.readUInt16BE(0);
         break;
       default:
         throw "Unknown instruction " + w.bytecode.toString()
