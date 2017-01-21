@@ -2,6 +2,7 @@ const instructionToByteCode = {
   local_load: 0x10, // Push argument to local stack
   add: 0x11, // Pop two items from local stack, add, and push result
   print: 0x12, // Pop one item from local stack, write to stdout
+  equal: 0x13, // Pop two items from local stack. compare, and push bool
   halt: 0xff, // Stop execution
 };
 
@@ -59,6 +60,9 @@ const vm = {
         break;
       case 'print':
         w.print(w.local_stack.pop())
+        break;
+      case 'equal':
+        w.local_stack.push(w.local_stack.pop() == w.local_stack.pop());
         break;
       default:
         throw "Unknown instruction " + w.bytecode.toString()
