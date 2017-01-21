@@ -8,8 +8,15 @@ IDENTIFIER foo
 ASSIGN =
 STRING "bar"
 ```
-test the parser
 
+test the parser
+```
+$ node dev/ast.js <<< 'let foo = "bar";'
+=============== final parse tree ===============
+[ { type: 'DEC_ASSIGN',
+    id: { type: 'ID', value: 'foo' },
+    exp: { type: 'STRING', value: 'bar' } } ]
+```
 
 ---
 
