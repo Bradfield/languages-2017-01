@@ -39,8 +39,15 @@ const vm = {
     // console.log(w.code);
     w.ip = w.entry || 0;
     w.local_stack = w.local_stack || [];
+    w.local_env = {};
     w.print = w.print || console.log.bind(console);
     w.bytecode = w.code[w.ip];
+    // w.callStack = [{
+    //   name: "main",
+    //   returnAddress: null,
+    //   localStack = [],
+    //   localEnv = {},
+    // }];
 
     while (w.bytecode != instructionToByteCode.halt && w.ip < w.code.length) {
       w.ip = w.ip + 1;
@@ -71,6 +78,8 @@ const vm = {
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
         w.ip = idx.readUInt16BE(0);
         break;
+      case 'local_load_env':
+        
       default:
         throw "Unknown instruction " + w.bytecode.toString()
     }
