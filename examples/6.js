@@ -1,2 +1,5 @@
 let bar = "what up";
-let bar = "naw";
+let a = (a,b) => {
+	let a = 4;
+	c = a + b
+};

@@ -10,7 +10,6 @@ number   [\+\-]? {num}+
 letter   [a-zA-Z]
 id       {letter}({letter}|{num})*
 quote    \"
-operator [-+/*]
 
 string-char [^\"]
 string-escape-char \\\"
@@ -46,7 +45,10 @@ while        return 'WHILE'
 let          return 'LET'
 true|false   return 'BOOL'
 {id}         return 'ID'
-{operator}		 return 'OP'
+\+	 		 return 'PLUS'
+\-	 		 return 'MINUS'
+\*	 		 return 'MULTIPLY'
+\/	 		 return 'DIVIDE'
 
 /* this.begin('sublexer') puts the lexer into state
    where only rules prefixed by <sublexer> will be
