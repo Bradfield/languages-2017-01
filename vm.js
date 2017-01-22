@@ -1,10 +1,11 @@
 const instructionToByteCode = {
-  local_load: 0x10, // Push argument to local stack
-  add: 0x11, // Pop two items from local stack, add, and push result
-  print: 0x12, // Pop one item from local stack, write to stdout
-  equal: 0x13, // Pop two items from local stack. compare, and push bool
-  jump: 0x14, // Set instruction pointer to argument
-  halt: 0xff, // Stop execution
+  LOAD_CONST: 0x10, // Push argument to local stack
+  ADD: 0x11, // Pop two items from local stack, add, and push result
+  PRINT: 0x12, // Pop one item from local stack, write to stdout
+  EQUAL: 0x13, // Pop two items from local stack. compare, and push bool
+  JUMP: 0x14, // Set instruction pointer to argument
+  SUB: 0x15, // Pop two items from local stack, add, and push result
+  HALT: 0xff, // Stop execution
 };
 
 const byteCodeToName = {}
@@ -13,7 +14,11 @@ for (let key of Object.keys(instructionToByteCode)){
 }
 
 const getByteCodeForName = (name) => {
-  return new Buffer([instructionToByteCode[name]]);
+  const bytecode = instructionToByteCode[name];
+  if (!bytecode) {
+    throw "Unknown instruction " + name;
+  }
+  return new Buffer([bytecode]);
 }
 
 const vm = {
@@ -60,23 +65,28 @@ const vm = {
     let idx, arg;
 
     switch(byteCodeToName[w.bytecode]) {
-      case 'local_load':
+      case 'LOAD_CONST':
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
-        arg = w.const[idx.readUInt16BE(0)]
+        arg = w.constPool[idx.readUInt16BE(0)]
         w.local_stack.push(arg);
         break;
-      case 'add':
+      case 'ADD':
         w.local_stack.push(w.local_stack.pop() + w.local_stack.pop());
         break;
-      case 'print':
+      case 'PRINT':
         w.print(w.local_stack.pop())
         break;
-      case 'equal':
+      case 'EQUAL':
         w.local_stack.push(w.local_stack.pop() == w.local_stack.pop());
         break;
-      case 'jump':
+      case 'JUMP':
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
         w.ip = idx.readUInt16BE(0);
+        break;
+      case 'SUB':
+        let rightOperand = w.local_stack.pop();
+        let leftOperand = w.local_stack.pop();
+        w.local_stack.push(leftOperand - rightOperand);
         break;
       case 'local_load_env':
         

@@ -18,7 +18,62 @@
 //  else
 //     for node in getChildren(node)
 //         codeGen(node)
-//  
+//
+const operationMap = {
+  "+": "ADD",
+  "-": "SUB",
+  "*": "MULT",
+  "/": "DIV",
+};
+
+let codeGen = (program) => {
+  // Get ordered nodes
+
+  // Iterate through ordered nodes and do stuff
+  // For each Node
+  //   Switch on Node type
+  //     Num: create const + load const
+  //     String: create const + load const
+  //     Operator: output byte code operation
+
+  let orderedNodes = postOrder(program);
+  let code = [];
+  let constPool = new Map();
+  let constPoolIndex = 0;
+
+  for (let node of orderedNodes) {
+    switch(node.type) {
+      case "OPERATION":
+        let operation = operationMap[node.op];
+        code.push(operation);
+        break;
+      case "NUM":
+      case "STRING":
+        let index;
+        if (constPool.has(node.value)) {
+          index = constPool.get(node.value);
+        } else {
+          constPool.set(node.value, constPoolIndex);
+          index = constPoolIndex;  
+          constPoolIndex++;
+        }
+
+        code.push("LOAD_CONST");
+        code.push(index);
+        break;
+      default:
+        throw("No bytecode implemented for AST node type: " + node.type);
+    }
+  }
+
+  constPool = Array.from(constPool.keys());
+  return {code, constPool};
+}
+
+// function ObjectFile() {
+//   this.code = [];
+//   this.constantPool = new Map();
+// }  
 
 let postOrder = (program) => { 
   let nodes = []
@@ -57,4 +112,4 @@ let isTerminal = (node) => {
   return false
 }
 
-module.exports = postOrder
+module.exports = codeGen

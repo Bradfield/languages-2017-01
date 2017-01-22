@@ -8,6 +8,7 @@ $ node dev/ast.js <<< 'let foo = 123;'
 const fs = require('fs')
 const { resolve } = require('path')
 const codegen = require('../codegen')
+const vm = require('../vm')
 // read input
 const stdinStr = fs.readFileSync('/dev/stdin', 'utf8')
 
@@ -23,5 +24,10 @@ const factory = require(resolve(__dirname, '../af'))
 parser.lexer = lexer
 const ast = parser.parse(stdinStr, factory)
 console.log("=============== postOrder nodes ===============")
-console.log(codegen(ast))
+let objectFile = codegen(ast)
+objectFile.code.push("PRINT");
+console.log(objectFile.code);
+objectFile.code = vm.assemble(objectFile.code);
+console.log(objectFile.code);
+vm.evalParsedObject(objectFile);
 // console.log(parser.generate())
