@@ -9,6 +9,10 @@ const af = {
 		type: 'NUM',
 		value: Number(n),
 	}),
+	operator: op => ({
+		type: 'OPERATOR',
+		value: op,
+	}),
   declareAssign: (id, exp) => ({
     type: 'DEC_ASSIGN',
     id,
@@ -27,26 +31,32 @@ const af = {
     type: 'LAMBDA',
     arguments,
     statements
-  })
+  }),
+	exp: (exp, left, right) => ({
+		type: "EXP",
+		value: exp,
+		left: left,
+		right: right,
+	}),
 }
 
 /*
 { type: program,
   statements: [
-    { 
+    {
       type: 'DEC_ASSIGN',
       id: { type: 'ID', value: 'foobar' },
-      exp: { type: 'NUM', value: 23 } 
+      exp: { type: 'NUM', value: 23 }
     },
-    { 
+    {
       type: 'DEC_ASSIGN',
       id: { type: 'ID', value: 'foo' },
-      exp: { type: 'STRING', value: 'Hello World' } 
+      exp: { type: 'STRING', value: 'Hello World' }
     },
-    { 
+    {
       type: 'DEC_ASSIGN',
       id: { type: 'ID', value: 'bar' },
-      exp: { type: 'NUM', value: 10 } 
+      exp: { type: 'NUM', value: 10 }
     }
   ]
 }
