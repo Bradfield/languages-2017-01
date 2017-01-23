@@ -67,7 +67,7 @@ const vm = {
     while (w.bytecode != instructionToByteCode.halt && w.ip < w.code.length) {
       w.ip = w.ip + 1;
       vm.dispatch(w);
-      w.bytecode = w.code[w.ip]
+      w.bytecode = w.code[w.ip];
     }
   },
 
@@ -76,15 +76,15 @@ const vm = {
 
     switch(byteCodeToName[w.bytecode]) {
       case 'LOAD_CONST':
-        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
-        arg = w.constPool[idx.readUInt16BE(0)]
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
+        arg = w.constPool[idx.readUInt16BE(0)];
         w.localStack.push(arg);
         break;
       case 'ADD':
         w.localStack.push(w.localStack.pop() + w.localStack.pop());
         break;
       case 'PRINT':
-        w.print(w.localStack.pop())
+        w.print(w.localStack.pop());
         break;
       case 'EQUAL':
         w.localStack.push(w.localStack.pop() == w.localStack.pop());
@@ -98,7 +98,7 @@ const vm = {
         let leftOperand = w.localStack.pop();
         w.localStack.push(leftOperand - rightOperand);
       case 'local_store_env':
-        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
         key = w.constPool[idx.readUInt16BE(0)];
         val = w.localStack.pop();
         w.localEnv[key] = val;
@@ -109,7 +109,7 @@ const vm = {
         w.localStack.push(w.localEnv[key]);
         break;
       default:
-        throw "Unknown instruction " + w.bytecode.toString()
+        throw "Unknown instruction " + w.bytecode.toString();
     }
   },
 };
