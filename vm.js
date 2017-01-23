@@ -42,19 +42,27 @@ const vm = {
     return buf;
   },
 
-  evalParsedObject: (w) => {
+  // add callStack to the world object
+  // move the localStack and localEnv into a frame object
+  // create an initial frame for the callStack object
+  // change localEnv and stack to be computed dynamically
+  evalParsedObject: w => {
     // console.log(w.code);
     w.ip = w.entry || 0;
-    w.localStack = w.localStack || [];
-    w.localEnv = {};
     w.print = w.print || console.log.bind(console);
     w.bytecode = w.code[w.ip];
-    // w.callStack = [{
-    //   name: "main",
-    //   returnAddress: null,
-    //   localStack = [],
-    //   localEnv = {},
-    // }];
+    w.callStack = [{
+      name: 'main',
+      returnAddr: null,
+      localStack: [],
+      localEnv: {},
+    }];
+    Object.defineProperty(w, "localStack", { get: function () { 
+      return w.callStack[w.callStack.length - 1].localStack; 
+    }});
+    Object.defineProperty(w, "localEnv", { get: function () { 
+      return w.callStack[w.callStack.length - 1].localEnv; 
+    }});
 
     while (w.bytecode != instructionToByteCode.halt && w.ip < w.code.length) {
       w.ip = w.ip + 1;
