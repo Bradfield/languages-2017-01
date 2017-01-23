@@ -13,11 +13,11 @@ const vm = require('../../vm')
 
 vm.evalParsedObject({
   // other 
-  const: [7, 5] ,
+  constPool: [7, 5] ,
   code: vm.assemble([
-    'local_load', 0, // Load 7 into local stack (from const pool)
-    'local_load', 1, // Load 5 into local stack (from const pool)
-    'add', // Pop 7, pop 5, add together, push 12 onto stack
-    'print', // Print top of stack (12)
+    'LOAD_CONST', 0, // Load 7 into local stack (from const pool)
+    'LOAD_CONST', 1, // Load 5 into local stack (from const pool)
+    'ADD', // Pop 7, pop 5, ADD together, push 12 onto stack
+    'PRINT', // Print top of stack (12)
   ])
 })

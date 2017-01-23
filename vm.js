@@ -6,6 +6,8 @@ const instructionToByteCode = {
   JUMP: 0x14, // Set instruction pointer to argument
   SUB: 0x15, // Pop two items from local stack, add, and push result
   HALT: 0xff, // Stop execution
+  LOAD_CONST_env: 0x15, // set a new key-value pair into local env object
+  local_store_env: 0x16, // get the value corresponding to a key from the env object
 };
 
 const byteCodeToName = {}
@@ -33,7 +35,7 @@ const vm = {
         int.writeUInt16BE(x, 0);
         buf = Buffer.concat([buf, int]);
         // expect to be int
-        // need to be encoded into a 2 byte big endian 
+        // need to be encoded into a 2 byte big endian
       }
     }
 
@@ -43,8 +45,8 @@ const vm = {
   evalParsedObject: (w) => {
     // console.log(w.code);
     w.ip = w.entry || 0;
-    w.local_stack = w.local_stack || [];
-    w.local_env = {};
+    w.localStack = w.localStack || [];
+    w.localEnv = {};
     w.print = w.print || console.log.bind(console);
     w.bytecode = w.code[w.ip];
     // w.callStack = [{
@@ -62,34 +64,42 @@ const vm = {
   },
 
   dispatch: (w) => {
-    let idx, arg;
+    let idx, arg, key, val;
 
     switch(byteCodeToName[w.bytecode]) {
       case 'LOAD_CONST':
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
         arg = w.constPool[idx.readUInt16BE(0)]
-        w.local_stack.push(arg);
+        w.localStack.push(arg);
         break;
       case 'ADD':
-        w.local_stack.push(w.local_stack.pop() + w.local_stack.pop());
+        w.localStack.push(w.localStack.pop() + w.localStack.pop());
         break;
       case 'PRINT':
-        w.print(w.local_stack.pop())
+        w.print(w.localStack.pop())
         break;
       case 'EQUAL':
-        w.local_stack.push(w.local_stack.pop() == w.local_stack.pop());
+        w.localStack.push(w.localStack.pop() == w.localStack.pop());
         break;
       case 'JUMP':
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
         w.ip = idx.readUInt16BE(0);
         break;
       case 'SUB':
-        let rightOperand = w.local_stack.pop();
-        let leftOperand = w.local_stack.pop();
-        w.local_stack.push(leftOperand - rightOperand);
+        let rightOperand = w.localStack.pop();
+        let leftOperand = w.localStack.pop();
+        w.localStack.push(leftOperand - rightOperand);
+      case 'local_store_env':
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]) // Monkeying
+        key = w.constPool[idx.readUInt16BE(0)];
+        val = w.localStack.pop();
+        w.localEnv[key] = val;
         break;
-      case 'local_load_env':
-        
+      case 'LOAD_CONST_env':
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]);
+        key = w.constPool[idx.readUInt16BE(0)];
+        w.localStack.push(w.localEnv[key]);
+        break;
       default:
         throw "Unknown instruction " + w.bytecode.toString()
     }
@@ -99,7 +109,7 @@ const vm = {
 module.exports = vm;
 // console.log(assemble(
 //   [
-//     'local_load', 1,
-//     'local_load', 2,
+//     'LOAD_CONST', 1,
+//     'LOAD_CONST', 2,
 //   ]
 // ));
