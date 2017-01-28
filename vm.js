@@ -1,47 +1,6 @@
-const instructionToByteCode = {
-  LOAD_CONST: 0x10, // Push argument to local stack
-  ADD: 0x11, // Pop two items from local stack, add, and push result
-  PRINT: 0x12, // Pop one item from local stack, write to stdout
-  EQUAL: 0x13, // Pop two items from local stack. compare, and push bool
-  JUMP: 0x14, // Set instruction pointer to argument
-  SUB: 0x15, // Pop two items from local stack, add, and push result
-  HALT: 0xff, // Stop execution
-  LOAD_CONST_env: 0x15, // set a new key-value pair into local env object
-  local_store_env: 0x16, // get the value corresponding to a key from the env object
-};
-
-const byteCodeToName = {}
-for (let key of Object.keys(instructionToByteCode)){
-  byteCodeToName[instructionToByteCode[key]] = key
-}
-
-const getByteCodeForName = (name) => {
-  const bytecode = instructionToByteCode[name];
-  if (!bytecode) {
-    throw "Unknown instruction " + name;
-  }
-  return new Buffer([bytecode]);
-}
-
+const assemble = require('./assembler')
+const {instructionToByteCode, byteCodeToName} = require('./byteCodes')
 const vm = {
-  assemble: (strs_and_ints) => {
-    let buf = new Buffer(0);
-
-    for (let x of strs_and_ints) {
-      if(typeof x == 'string'){
-        buf = Buffer.concat([buf, getByteCodeForName(x)]);
-      } else {
-        let int = new Buffer(2);
-        int.writeUInt16BE(x, 0);
-        buf = Buffer.concat([buf, int]);
-        // expect to be int
-        // need to be encoded into a 2 byte big endian
-      }
-    }
-
-    return buf;
-  },
-
   // add callStack to the world object
   // move the localStack and localEnv into a frame object
   // create an initial frame for the callStack object
@@ -112,6 +71,7 @@ const vm = {
         throw "Unknown instruction " + w.bytecode.toString();
     }
   },
+  assemble
 };
 
 module.exports = vm;
