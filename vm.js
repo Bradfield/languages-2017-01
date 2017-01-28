@@ -23,7 +23,7 @@ const vm = {
       return w.callStack[w.callStack.length - 1].localEnv; 
     }});
 
-    while (w.bytecode != instructionToByteCode.halt && w.ip < w.code.length) {
+    while (w.bytecode != instructionToByteCode.HALT && w.ip < w.code.length) {
       w.ip = w.ip + 1;
       vm.dispatch(w);
       w.bytecode = w.code[w.ip];
@@ -66,6 +66,27 @@ const vm = {
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]);
         key = w.constPool[idx.readUInt16BE(0)];
         w.localStack.push(w.localEnv[key]);
+        break;
+      case 'CALL':
+        idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
+        let functionDef = w.constPool[idx.readUInt16BE(0)];
+        let jumpIndex = functionDef[0]
+        let functionArgs = functionDef[1]
+        let argMap = {}
+        for (let arg of functionArgs){
+          argMap[w.constPool[arg]] = w.localStack.pop()
+        }
+        w.callStack.push({
+          name: functionDef[2],
+          returnAddr: w.ip,
+          localStack: [],
+          localEnv: argMap
+        })
+        w.ip = jumpIndex
+        break;
+      case "RETURN":
+        w.ip = w.callStack.pop().returnAddr
+        // TODO: add return values
         break;
       default:
         throw "Unknown instruction " + w.bytecode.toString();
