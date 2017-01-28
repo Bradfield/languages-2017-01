@@ -56,13 +56,13 @@ const vm = {
         let rightOperand = w.localStack.pop();
         let leftOperand = w.localStack.pop();
         w.localStack.push(leftOperand - rightOperand);
-      case 'local_store_env':
+      case 'STORE_ENV':
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]); // Monkeying
         key = w.constPool[idx.readUInt16BE(0)];
         val = w.localStack.pop();
         w.localEnv[key] = val;
         break;
-      case 'LOAD_CONST_env':
+      case 'LOAD_ENV':
         idx = new Buffer([w.code[w.ip++], w.code[w.ip++]]);
         key = w.constPool[idx.readUInt16BE(0)];
         w.localStack.push(w.localEnv[key]);
@@ -75,9 +75,3 @@ const vm = {
 };
 
 module.exports = vm;
-// console.log(assemble(
-//   [
-//     'LOAD_CONST', 1,
-//     'LOAD_CONST', 2,
-//   ]
-// ));
